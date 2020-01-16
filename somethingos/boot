@@ -1,0 +1,380 @@
+--Varibles
+    version = "1.1"
+    running = true
+    pass = false
+    --Images
+    _dt = paintutils.loadImage("/SomethingOS/.backgrounds/dt")
+    _startup = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su")
+    _startup1 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su1")
+    _startup2 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su2")
+    _startup3 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su3")
+    _startup4 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su4")
+    _startup5 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su5")
+    _startup6 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su6")
+    _startup7 = paintutils.loadImage("/SomethingOS/.backgrounds/.su/su7")
+    _shutdown = paintutils.loadImage("/SomethingOS/.backgrounds/sd")
+    -- no red in ring
+    _restart = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs")
+    -- with red in ring
+    _restart1 = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs1")
+    _restart2 = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs2")
+    _restart3 = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs3")
+    _restart4 = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs4")
+    _restart5 = paintutils.loadImage("/SomethingOS/.backgrounds/.rs/rs5")
+
+    --login
+    _login = paintutils.loadImage("/SomethingOS/.backgrounds/.pas/login")
+    
+    --Newuserstuff
+    _newuser = paintutils.loadImage("/SomethingOS/.backgrounds/.newuser/numk")
+    
+    --removeuserstuff
+    _deleteuser = paintutils.loadImage("/SomethingOS/.backgrounds/ru")
+    --Booleans
+    _ms = 0
+    _rcm = 0
+    _firststartup = 0
+
+--Functions
+    clear = function()
+        term.setBackgroundColor(colors.black)
+        term.clear()
+        term.setCursorPos(1, 1)
+    end
+    
+    
+    drawMenu1 = function()
+        term.setCursorPos(1, 2)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        print("[POWER]")
+        term.setCursorPos(1, 3)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        print("[REBOOT]")
+        term.setCursorPos(1, 4)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        print("[New user]")
+        term.setCursorPos(1, 5)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        print("[Remove user]")
+  end
+  
+
+    drawRCMenu = function(dir, x, y)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        term.setCursorPos(x, y+1)
+        term.write(" [idk]  ")
+    end
+          
+    drawMenu2 = function()
+        term.setCursorPos(8, 2)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.red)
+        print("[test]")
+    end
+    
+    drawGameMenu = function()
+        term.setCursorPos(19, 2)
+        term.setBackgroundColor(colors.white)
+        term.setTextColor(colors.orange)
+        print("Cookie clicker")
+    end                      
+                                                  
+    drawTaskBar = function()
+        term.setCursorPos(1, 1)
+        term.setBackgroundColor(colors.blue)
+        term.clearLine()
+        term.setCursorPos(1, 1)
+        term.setBackgroundColor(colors.lime)
+        term.setTextColor(colors.white)
+        term.write("[MENU]")
+        term.setCursorPos(8, 1)
+        term.write("[SETTINGS]")
+        term.setCursorPos(19, 1)
+        term.write("[GAMES]")
+    end
+    
+    drawCreatinguser = function(str)
+        term.clear()
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_newuser, 1, 1)
+        term.setCursorPos(15, 5)
+        print("Creating new user")
+        term.setCursorPos(12, 8)
+        print("Username: ")
+        term.setCursorPos(12, 10)
+        print("Password: ")
+        term.setCursorPos(5, 12)
+        print("Retype Password: ")
+        term.setCursorPos(22, 8)
+        term.setTextColor(colors.white)
+        term.setBackgroundColor(colors.lime)
+        local new_user = read()
+        term.setCursorPos(22, 10)
+        local new_pass = read("*")
+        term.setCursorPos(22, 12)
+        local new_pass2 = read("*")
+        if fs.exists("SomethingOS/Users/" .. new_user, "r") then
+            term.setCursorPos(12, 14)
+            term.setBackgroundColor(colors.cyan)
+            term.setTextColor(colors.white)
+            term.write("Username already exists!")
+            sleep(1)
+            clear()
+            drawCreatinguser()
+        elseif new_pass == new_pass2 then
+            userfile = fs.open("SomethingOS/Users/" .. new_user, "w", "a")
+            userfile.write(new_user)
+            sleep(1)
+            userpassfile = fs.open("SomethingOS/Users/Pass/" .. new_pass, "w", "a")
+            userpassfile.write(new_pass)
+            shell.run("reboot")
+        else
+            term.setCursorPos(12, 14)
+            term.setBackgroundColor(colors.cyan)
+            term.setTextColor(colors.white)
+            term.write("Password aren't the same!")
+            sleep(1)
+            clear()
+            drawCreatinguser()
+        end
+    end
+    
+    drawRemoveUser = function()
+        term.clear()
+        term.setCursorPos(1, 1)
+        term.setBackgroundColor(colors.blue)
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_deleteuser, 1, 1)
+        term.setCursorPos(15, 5)
+        print("Delete user by name")
+        term.setCursorPos(12, 8)
+        print("Username: ")
+        term.setCursorPos(22, 8)
+        term.setTextColor(colors.white)
+        term.setBackgroundColor(colors.lime)
+        local remove_user = read()
+            if fs.exists("SomethingOS/Users/" .. remove_user, "r", "a") then
+                if remove_user == "superadmin" then
+                    term.setCursorPos(10, 11)
+                    term.setBackgroundColor(colors.cyan)
+                    term.setTextColor(colors.white)
+                    term.write("You CAN'T remove Admin from the system!")
+                    sleep(1)
+                    clear()
+                    drawRemoveUser()
+                elseif remove_user == "SuperAdmin" then
+                    term.setCursorPos(10, 11)
+                    term.setBackgroundColor(colors.cyan)
+                    term.setTextColor(colors.white)
+                    term.write("You CAN'T remove Admin from the system!")
+                    sleep(1)
+                    clear()
+                    drawRemoveUser()
+                else
+                    fs.delete("SomethingOS/Users/" .. remove_user)
+                end
+            else
+                term.setCursorPos(13,11)
+                term.setBackgroundColor(colors.cyan)
+                term.setTextColor(colors.white)
+                term.write("''" .. remove_user .. "'' does not exsist!")
+                sleep(5)
+                clear()
+                drawDeskTop()
+                drawTaskBar()
+                runTime()
+            end
+    end
+
+
+    drawLogin = function()
+        term.clear()
+        term.setCursorPos(1, 1)
+        term.setBackgroundColor(colors.blue)
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_login, 1, 1)
+        term.setCursorPos(12, 8)
+        print("Username: ")
+        term.setCursorPos(12, 10)
+        print("Password: ")
+        term.setCursorPos(22, 8)
+        term.setTextColor(colors.white)
+        term.setBackgroundColor(colors.lime)
+        local input_user = read()
+        term.setCursorPos(22, 10)
+        local input_pass = read("*")
+        if fs.exists("SomethingOS/Users/" .. input_user, "r") then
+            if fs.exists("SomethingOS/Users/Pass/" .. input_pass, "r") then
+                drawDeskTop()
+                drawTaskBar()
+                runTime()            
+            else
+                term.setCursorPos(12, 12)
+                term.setBackgroundColor(colors.cyan)
+                term.setTextColor(colors.white)
+                term.write("Wrong username or password!")
+                sleep(1)
+                clear()
+                drawLogin()
+            end
+        else
+            term.setCursorPos(12, 12)
+            term.setBackgroundColor(colors.cyan)
+            term.setTextColor(colors.white)
+            term.write("Wrong username or password!")
+            sleep(1)
+            clear()
+            drawLogin()
+        end
+    end
+
+
+
+
+    drawDeskTop = function()
+        term.setBackgroundColor(colors.lightGray)
+        term.clear()
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_dt, 1, 1)    
+    end
+    
+    drawSettings = function()
+        term.clear()
+        term.setCursorPos(1, 1)
+    end
+    
+    drawStartUp = function()
+        term.setBackgroundColor(colors.white)
+        term.clear()
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_startup, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup1, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup2, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup3, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup4, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup5, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup6, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_startup7, 1, 1)
+    end
+    
+    stop = function()
+        clear()
+        term.setTextColor(colors.lime)
+        term.clear()
+        term.setBackgroundColor(colors.black)
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_shutdown, 1, 1)
+        sleep(5)
+        running = false
+        os.shutdown()
+    end
+    
+    
+    restart = function()
+        clear()
+        term.clear()
+        term.setBackgroundColor(colors.white)
+        term.setCursorPos(1, 1)
+        paintutils.drawImage(_restart, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart1, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart2, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart3, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart4, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart5, 1, 1)
+        sleep(1)
+        paintutils.drawImage(_restart, 1, 1)
+        sleep(2)
+        running = false
+        os.reboot()
+    end
+    
+    runTime = function()
+        while running do
+            event, button, x , y = os.pullEvent("mouse_click")
+            if _ms == 0 and button == 1 and x < 7 and y == 1 then
+                drawMenu1()
+                _ms = 1
+            elseif _ms == 1 and button == 1 and y == 2 and x < 7 then
+                stop()
+            elseif _ms == 1 and button == 1 and y == 3 and x < 8 then
+                restart()
+            elseif _ms == 1 and button == 1 and y == 4 and x < 9 then
+                drawCreatinguser()
+            elseif _ms == 1 and button == 1 and y == 5 and x < 10 then
+                drawRemoveUser()
+            elseif _ms == 1 and button == 1 and x < 7 and y == 1 then
+                _ms = 0
+                init()
+            elseif _ms == 0 and button == 1 and x > 7 and x < 18 and y == 1 then
+                drawMenu2()
+                _ms = 1
+            elseif _ms == 1 and button == 1 and x > 7 and x < 18 and y == 1 then
+                _ms = 0
+                init()
+            elseif _ms == 0 and button == 1 and x > 18 and x < 25 and y == 1 then
+                drawGameMenu()
+                _ms = 1
+            elseif _ms == 1 and button == 1 and x > 18 and x < 25 and y == 1 then
+                _ms = 0
+                init()
+            elseif _ms == 1 and button == 1 and x > 18 and x < 31 and y == 2 then
+                clear()
+                shell.run("cc")
+            end
+        end
+    end
+
+    
+    
+    startup = function()
+    	local file2 = fs.open("dontremove", "a")
+        local file2 = fs.open("dontremove", "r")
+        data = file2.readAll()
+        file2.close()
+        if data == "1" then
+        	drawStartUp()
+            sleep(2)
+            drawLogin()
+        else
+        	firststartup()
+        end
+    end
+    
+
+    firststartup = function()
+		file = fs.open("startup.lua", "w")
+		file.write('shell.run("boot")')
+		file.close()
+		file2 = fs.open("dontremove", "w")
+		file2.write("1")
+		file2.close()
+    	sleep(1)
+        shell.run("label set os")
+        drawCreatinguser()
+    end
+
+    init = function()
+        drawDeskTop()
+        drawTaskBar()
+        runTime()
+    end
+
+--Main Stuff
+startup()
